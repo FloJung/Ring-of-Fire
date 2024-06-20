@@ -1,5 +1,5 @@
 import { NgFor, NgIf, NgStyle } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { Game } from '../../models/game';
 import { PlayerComponent } from '../player/player.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,6 +7,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { DialogAddPlayerComponent } from '../dialog-add-player/dialog-add-player.component';
 import { GameDescriptionComponent } from '../game-description/game-description.component';
+import { Firestore, collection, collectionData, addDoc, doc, docData } from '@angular/fire/firestore';
+import { Observable, Subscription } from 'rxjs';
+import { log } from 'console';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-game',
@@ -29,17 +33,38 @@ export class GameComponent implements OnInit {
   pickCardAnimation = false;
   game: Game;
   currentCard: string = '';
+  private subscription: Subscription = new Subscription();
+  item$: any;
+  itemCollection: any;
+  firestore: Firestore = inject(Firestore);
 
-  constructor(public dialog: MatDialog) {
+  constructor(private route: ActivatedRoute,public dialog: MatDialog) {
     this.game = new Game();
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.newGame();
+    this.route.params.subscribe((params) => {
+    console.log(params);
+    
+      this.itemCollection = doc(this.firestore, `games/${params['id']}`);
+      this.item$ = collectionData(this.itemCollection).subscribe((game: any) => {
+        console.log('Game update', game);
+        this.game.currentPlayer = game.currentPlayer;
+        this.game.playedCard = game.playedCard;
+        this.game.players = game.players;
+        this.game.stack = game.stack;
+      });
+      });
+    }
+
+  ngOnDestroy() {
+    this.itemCollection.unsubscribe();
   }
 
   newGame() {
     this.game = new Game();
+    const newGameRef = addDoc(collection(this.firestore, 'games'), this.game.toJson());
   }
 
   takeCard() {

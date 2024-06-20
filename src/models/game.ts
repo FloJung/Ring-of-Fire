@@ -15,7 +15,21 @@ export class Game {
         }
         shuffle(this.stack);
     }
+
+
+    public toJson() {
+        return {
+            players: this.players,
+            stack: this.stack,
+            playedCard: this.playedCard,
+            currentPlayer: this.currentPlayer
+        }
+    }
 }
+
+
+
+
 
 const shuffle = (array: string[]) => { 
     for (let i = array.length - 1; i > 0; i--) { 
