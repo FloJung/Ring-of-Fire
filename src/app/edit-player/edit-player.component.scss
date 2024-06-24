@@ -1,0 +1,20 @@
+.profilePicture {
+    width: 100px;
+    height: 100px;
+    border-radius: 100%;
+    
+    cursor: pointer;
+    margin-left: 5px;
+    &hover {
+        filter: brightness(1.5);
+    }
+    
+}
+
+div {
+    padding: 10px;
+    background-color: #d7d5d5;
+    h2 {
+        color: rgb(25, 25, 25);
+    }
+}

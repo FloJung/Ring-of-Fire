@@ -1,0 +1,6 @@
+mat-card {
+    background-color: #bdbdbd;
+    @media (max-width: 600px) {
+        min-height: 150px;
+    }
+}

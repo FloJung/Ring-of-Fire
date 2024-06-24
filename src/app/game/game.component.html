@@ -1,22 +1,72 @@
-
-
-
-
-<app-player *ngFor="let player of game.players; let i = index" [ngStyle]="{'top.px': 100 + (i * 70)}" [name]="player" [playerActive]="i == game.currentPlayer" class="playerPosition"></app-player>
-
-<div class="gameField">
-
-    <div class="cardStack">
-        <img [ngStyle]="{'right.px': i * 3 , 'bottom.px': i * 2}" *ngFor="let c of [1,2,3,4]; let i = index" src="assets/img/cards/card_cover.png" alt="">
-         <img (click)="takeCard()"  class="topCard" src="assets/img/cards/card_cover.png" alt="">
-        <img *ngFor="let c of game.playedCard; let i = index" class="playedCard" src="assets/img/cards/{{c}}.png" alt="">
-
-        <img (click)="takeCard()" *ngIf="pickCardAnimation"  class="pickCard" src="assets/img/cards/{{currentCard}}.png" alt="">
-    </div>
+<div class="gameOver" *ngIf="gameOver" >
+  <img src="assets/img/GameOver.jpg" alt="">
+  
 </div>
 
-<app-game-description [card]="currentCard" class="pinBottom"></app-game-description>
+<app-player
+  (click)="editPlayer(i)"
+  *ngFor="let player of game?.players; let i = index"
+  [ngStyle]="{ 'top.px': 100 + i * 70 }"
+  [name]="player"
+  [playerActive]="i == game?.currentPlayer"
+  [image]="game!.playerImages[i]"
+  class="playerPosition hideMobile"
+></app-player>
 
-    <button mat-fab aria-label="Example icon button with a delete icon" (click)="openDialog()" class="btnAdd">
-        <mat-icon>add</mat-icon>
-    </button>
+<div class="srcollContainer ">
+<app-player-mobile
+  (click)="editPlayer(i)"   
+  *ngFor="let player of game?.players; let i = index"
+  [name]="player"
+  [playerActive]="i == game?.currentPlayer"
+  [image]="game!.playerImages[i]"
+  class="hideDesktop "
+></app-player-mobile>
+</div>
+
+
+
+<div *ngIf="!gameOver" class="gameField">
+  <div class="cardStack">
+    <img
+      [ngStyle]="{ 'right.px': i * 3, 'bottom.px': i * 2 }"
+      *ngFor="let c of [1, 2, 3, 4]; let i = index"
+      src="assets/img/cards/card_cover.png"
+      alt=""
+    />
+    <img
+      (click)="takeCard()"
+      class="topCard"
+      src="assets/img/cards/card_cover.png"
+      alt=""
+    />
+    <img
+      *ngFor="let c of game?.playedCard; let i = index"
+      class="playedCard"
+      src="assets/img/cards/{{ c }}.png"
+      alt=""
+    />
+
+    <img
+      (click)="takeCard()"
+      *ngIf="game!.pickCardAnimation"
+      class="pickCard"
+      src="assets/img/cards/{{ game!.currentCard }}.png"
+      alt=""
+    />
+  </div>
+</div>
+
+<app-game-description
+  [card]="game!.currentCard"
+  class="pinBottom"
+></app-game-description>
+
+<button
+  mat-fab
+  aria-label="Example icon button with a delete icon"
+  (click)="openDialog()"
+  class="btnAdd"
+>
+  <mat-icon>add</mat-icon>
+</button>
